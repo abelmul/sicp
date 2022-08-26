@@ -1,5 +1,7 @@
 #lang scheme
 
+;; https://eli.thegreenplace.net/2007/06/21/sicp-section-11
+
 ;;; 1.2
 
 (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
@@ -36,3 +38,21 @@
 ;; in the applicative order the interpreter can't fully
 ;; evaluate (p) because of it recursively returns itself
 ;; in the normal-order evaluation(expand and reduce) it doesn't reach (p) because (= x 0) evaluates #t
+
+;; 1.6
+
+;; It would recursively run sqrt-iter and would never finish. This is because of applicative order execution
+
+;; 1.7
+(define (abs x)
+  ((if (> x 0) + -) x))
+(define (average x y)
+  (/ (+ x y) 2))
+(define (good-enough? guess x)
+  (< (abs (- x (square guess))) 0.001))
+(define (improve guess x)
+  (average guess (/ x guess)))
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x) guess (sqrt-iter (improve guess x) x)))
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
