@@ -49,7 +49,7 @@
       1
       (+ (pascal-tri-rec (- row 1) (- col 1)) (pascal-tri-rec row (- col 1)))))
 
-;;; 1.13 
+;;; 1.13
 #|
 φ = phi = (1 + sqrt(5))/2 = phi^2 - 1
 ψ = psi = (1 - sqrt(5))/2 = psi^2 - 1
@@ -76,3 +76,17 @@ fib(n) = fib(n-1) + fib(n-2)
        = (phi^(n-2)*phi^2 - psi^(n-1)*psi^2)/sqrt(5)
        = (phi^n - psi^n)/sqrt(5)
 |#
+
+;;; 1.14
+;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
+
+;;; 1.15
+(define (sine angle)
+  (define (cube x)
+    (* x x x))
+  (define (p x)
+    (- (* 3 x) (* 4 (cube x))))
+  (if (not (> (abs angle) 0.1)) angle (p (sine (/ angle 3.0)))))
+
+;; for (sine 12.5) p is called 5 times 12.5/3^5 = 0.05
+;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
