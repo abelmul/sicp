@@ -99,7 +99,7 @@
     (if (= b 0) mul (fast-mul-iter (double a) (halve b) (if (even? b) mul (+ mul a)))))
   (fast-mul-iter a b 0))
 
-;;; 1.18
+;;; 1.19
 (define (fib n)
   (define (fib-iter a b p q count)
     (cond
@@ -116,3 +116,7 @@
        q
        (- count 1)]))
   (fib-iter 1 0 0 1 n))
+
+;;; 1.20
+(define (gcd a b)
+  (if (= b 0) a (gcd b (remainder a b))))
