@@ -63,7 +63,7 @@
 ;; for (sine 12.5) p is called 5 times 12.5/3^5 = 0.05
 ;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
 
-;;; 1.6
+;;; 1.16
 (define (square x)
   (* x x))
 (define (even? x)
@@ -80,7 +80,7 @@
     (if (= n 0) mul (fast-expt-iter (* b b) (if (even? n) mul (* mul b)) (quotient n 2))))
   (fast-expt-iter b 1 n))
 
-;;; 1.7
+;;; 1.17
 (define (double a)
   (+ a a))
 (define (halve a)
@@ -92,7 +92,27 @@
     [(even? b) (fast-mul-rec (double a) (halve b))]
     [else (+ a (fast-mul-rec (double a) (halve (- b 1))))]))
 
+;; 1.18
+
 (define (fast-mul a b)
   (define (fast-mul-iter a b mul)
     (if (= b 0) mul (fast-mul-iter (double a) (halve b) (if (even? b) mul (+ mul a)))))
   (fast-mul-iter a b 0))
+
+;;; 1.18
+(define (fib n)
+  (define (fib-iter a b p q count)
+    (cond
+      [(= count 0) b]
+      [(even? count)
+       (fib-iter a
+                 b
+                 (+ (* p p) (* q q)) ; compute p'
+                 (+ (* q q) (* 2 (* p q))) ; compute q'
+                 (/ count 2))]
+      [else
+       (fib-iter (+ (* b q) (* a q) (* a p)) (+ (* b) p) (* a q))
+       p
+       q
+       (- count 1)]))
+  (fib-iter 1 0 0 1 n))
