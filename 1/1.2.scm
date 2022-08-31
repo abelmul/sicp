@@ -49,34 +49,6 @@
       1
       (+ (pascal-tri-rec (- row 1) (- col 1)) (pascal-tri-rec row (- col 1)))))
 
-;;; 1.13
-#|
-φ = phi = (1 + sqrt(5))/2 = phi^2 - 1
-ψ = psi = (1 - sqrt(5))/2 = psi^2 - 1
-
-prove
-
-fib(n) = (phi^n - psi^n)/sqrt(5)
-
-
-base case
-fib(0) = (phi^0 - psi^0)/sqrt(5) = 0
-fib(1) = (phi^1 - psi^1)/sqrt(5) = 1
-
-assume
-fib(n-1) = (phi^(n-1) - psi^(n-1))/sqrt(5)
-fib(n-2) = (phi^(n-2) - psi^(n-2))/sqrt(5)
-
-induction
-
-fib(n) = fib(n-1) + fib(n-2)
-       = (phi^(n-1) - psi^(n-1))/sqrt(5) - (phi^(n-2) - psi^(n-2))/sqrt(5)
-       = (phi^(n-1) + phi^(n-2) - psi^(n-1) - psi^(n-2) )/sqrt(5)
-       = (phi^(n-2)(phi+1) - psi^(n-1)(psi+1))/sqrt(5)
-       = (phi^(n-2)*phi^2 - psi^(n-1)*psi^2)/sqrt(5)
-       = (phi^n - psi^n)/sqrt(5)
-|#
-
 ;;; 1.14
 ;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
 
@@ -90,3 +62,37 @@ fib(n) = fib(n-1) + fib(n-2)
 
 ;; for (sine 12.5) p is called 5 times 12.5/3^5 = 0.05
 ;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
+
+;;; 1.6
+(define (square x)
+  (* x x))
+(define (even? x)
+  (= (remainder x 2) 0))
+
+(define (fast-expt-rec b n)
+  (cond
+    [(= n 0) 1]
+    [(even? n) (square (fast-expt-rec b (/ n 2)))]
+    [else (* b (fast-expt-rec b (- n 1)))]))
+
+(define (fast-expt b n)
+  (define (fast-expt-iter b mul n)
+    (if (= n 0) mul (fast-expt-iter (* b b) (if (even? n) mul (* mul b)) (quotient n 2))))
+  (fast-expt-iter b 1 n))
+
+;;; 1.7
+(define (double a)
+  (+ a a))
+(define (halve a)
+  (quotient a 2))
+
+(define (fast-mul-rec a b)
+  (cond
+    [(= b 0) 0]
+    [(even? b) (fast-mul-rec (double a) (halve b))]
+    [else (+ a (fast-mul-rec (double a) (halve (- b 1))))]))
+
+(define (fast-mul a b)
+  (define (fast-mul-iter a b mul)
+    (if (= b 0) mul (fast-mul-iter (double a) (halve b) (if (even? b) mul (+ mul a)))))
+  (fast-mul-iter a b 0))
