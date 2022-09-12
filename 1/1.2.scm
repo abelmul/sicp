@@ -1,4 +1,4 @@
-#lang scheme
+#lang sicp
 
 (define (factorial-rec n)
   (if (= n 0) 1 (* n (factorial-rec (- n 1)))))
@@ -120,3 +120,82 @@
 ;;; 1.20
 (define (gcd a b)
   (if (= b 0) a (gcd b (remainder a b))))
+
+;;; divisors
+;;; 1.23
+(define (smallest-divisor n)
+  (define (divides? a b)
+    (= (remainder b a) 0))
+  (define (find-divisor n test-divisor)
+    (define (next-divisor n)
+      (if (= n 2) 3 (+ n 2)))
+    (cond
+      [(> (square test-divisor) n) n]
+      [(divides? test-divisor n) test-divisor]
+      [else (find-divisor n (next-divisor test-divisor))]))
+
+  (find-divisor n 2))
+
+;;; primes
+
+(define (expmod base exp m)
+  (cond
+    [(= exp 0) 1]
+    [(even? exp) (remainder (square (expmod base (/ exp 2) m)) m)]
+    [else (remainder (* base (expmod base (- exp 1) m)) m)]))
+
+(define (fermat-test n)
+  (define (try-it a n)
+    (= (expmod a n n) a))
+  (try-it (random (- n 1)) n))
+(define (fast-prime? n times)
+  (cond
+    [(= times 0) true]
+    [fermat-test n]
+    [fast-prime?
+     n
+     (- times 1)]
+    [else false]))
+
+;;; 1.22
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+(define (timed-prime-test n)
+  (define (report-prime elapsed-time)
+    (display " *** ")
+    (display elapsed-time))
+  (define (start-prime-test n start-time)
+    (if (prime? n) (report-prime (- (runtime) start-time))))
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (search-for-primes n d)
+  (cond
+    [(> n (+ d 1))
+     (newline)
+     (display n)]
+    [(even? n) (search-for-primes (+ n 1) d)]
+    [else
+     (timed-prime-test n)
+     (search-for-primes (+ n 1) d)]))
+
+;;; 1.25
+
+;;; if we did (fast-expt base exp) we will compute the value unnessesarily.
+;;; It might also cause overflow on some platforms and languages if the computed number is very large.
+;;; But we can use the fact that remainder(a x b, n) = remainder(a, n) x remainder(b, n) to compute less.
+
+;;; 1.26
+
+;;; if we do (* (expmod base (/ exp 2)) (expmod base (/ exp 2))) we compute the (expmod base (/ exp 2)) twice.
+;;; Since expmod is recursive this computation will call another expmod ... etc.
+;;; Which will make expmod tree recursive. But if we call (squre (expmod base (/ exp 2))) we compute it once.
+
+;;; 1.27
+
+(define (test-carmichael n)
+  (define (test-fermat a)
+    (if (= a n) #t (if (= (expmod a n n) a) (test-fermat n (+ a 1)) #f)))
+  (test-fermat 2))

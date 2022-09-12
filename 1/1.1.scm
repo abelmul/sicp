@@ -1,4 +1,4 @@
-#lang scheme
+#lang sicp
 
 ;; https://eli.thegreenplace.net/2007/06/21/sicp-section-11
 
