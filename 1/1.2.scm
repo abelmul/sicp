@@ -199,3 +199,29 @@
   (define (test-fermat a)
     (if (= a n) #t (if (= (expmod a n n) a) (test-fermat n (+ a 1)) #f)))
   (test-fermat 2))
+
+;;; 1.28
+(define (fast-prime-miller-rabin n times)
+  (define (remainder-if-not-zero number m)
+    (if (= number 0) 0 (remainder number m)))
+
+  (define (expmod base exp m)
+    (cond
+      [(= exp 0) 1]
+      [(= (remainder (* base base) m) 0) 0]
+      [(even? exp) (remainder (square (expmod base (/ exp 2) m)) m)]
+      [else (remainder (* base (expmod base (- exp 1) m)) m)]))
+
+  (define (try-it a n)
+    (= (expmod a n n) a))
+
+  (define (miller-rabit-test n)
+    (try-it (random (- n 1)) n))
+
+  (cond
+    [(= times 0) true]
+    [miller-rabit-test n]
+    [fast-prime?
+     n
+     (- times 1)]
+    [else false]))
