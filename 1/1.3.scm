@@ -78,3 +78,8 @@
 ;   (define (combiner a b)
 ;     (+ a b))
 ;   (filtered-accumulate-iter combiner 0 identity a add-one b prime?))
+
+;;; 1.34
+;;; if f is defined as (define (f g) (g 2))
+;;; (f f) -> (f 2) -> (2 2)
+;;; since 2 is not a function this is an error.
