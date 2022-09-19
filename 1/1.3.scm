@@ -83,3 +83,55 @@
 ;;; if f is defined as (define (f g) (g 2))
 ;;; (f f) -> (f 2) -> (2 2)
 ;;; since 2 is not a function this is an error.
+
+;;; 1.35
+
+;;; phi is one of the roots of the function x^2 = x + 1
+;;; which can be re written as x = 1 + 1/x. Which is the transformation in the question
+
+;; (fixed-point (lambda (x) (+ 1 (/ 1 x)))  1)
+
+;;; 1.36
+
+(define (fixed-point f first-guess)
+  (define tolerance 0.00001)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ([next (f guess)])
+      (display next)
+      (newline)
+      (if (close-enough? guess next) next (try next))))
+  (try first-guess))
+
+;; without dampening (34 calls)
+; (fixed-point (lambda (x) (/ (log 1000) (log x)))  2)
+;; with dampening (9 calls)
+; (fixed-point (lambda (x) (/ (+ x (/ (log 1000) (log x))) 2)) 2)
+
+;;; 1.37
+;; this is convulted see https://eli.thegreenplace.net/2007/07/13/sicp-sections-132-133
+(define (cont-frac n d k)
+  (define (cont-frac-impl i)
+    (if (= i k) (/ (n i) (d i)) (/ (n i) (+ (d i) (cont-frac-impl n d (+ i 1))))))
+  (cont-frac-impl n d 1))
+
+;;; 1/phi
+; (cont-frac (lambda (n) 1) (lambda (d) 1) 20)
+
+(define (cont-frac-iter n d k)
+  (define (iter result i)
+    (if (= i 1) (/ (n 1) result) (iter (+ (d (- i 1)) (/ (n i) result)) (- i 1))))
+  (iter (d k) k))
+
+;;; 1.38
+
+;;; e - 2
+; (cont-frac-iter (lambda (i) 1.0) (lambda (i) (cond [(= i 2) i] [(= (remainder (+ i 1) 3) 0) (* 2 (/ (+ i 1) 3))] [else 1])) 20)
+
+;;; 1.39
+
+(define (tan-cf x n)
+  (define (tan-n i)
+    (/ (if (= i 1) x (* x x)) (- (+ (* 2 i) 1) (if (= i n) 0 (tan-n (+ i 1))))))
+  (tan-n 1))
