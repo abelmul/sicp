@@ -135,3 +135,29 @@
   (define (tan-n i)
     (/ (if (= i 1) x (* x x)) (- (+ (* 2 i) 1) (if (= i n) 0 (tan-n (+ i 1))))))
   (tan-n 1))
+
+;;; newtons method
+(define (deriv g)
+  (define dx 0.00001)
+  (lambda (x) (/ (- (g (+ x dx)) (g x)) dx)))
+(define (newton-transform g)
+  (lambda (x) (- x (/ (g x) ((deriv g) x)))))
+(define (newtons-method g guess)
+  (fixed-point (newton-transform g) guess))
+
+;;; 1.40
+(define (cubic a b c)
+  (lambda (x) (+ c (* b x) (* a x x) (* x x x))))
+
+;;; 1.41
+(define (double f)
+  (lambda (x) (f (f x))))
+;; (((double (double double)) inc) 5) = 21
+
+;;; 1.42
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+;;; 1.43
+(define (repeated f n)
+  (if (= n 1) (lambda (x) (f x)) (compose f (repeated f (- n 1)))))
