@@ -4,7 +4,7 @@
 
 ;;; 1.2
 
-(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
+; (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
 
 ;;; 1.3
 (define (square x)
@@ -67,3 +67,8 @@
   (if (good-enough-cube? guess old-guess) guess (cube-iter x (improve-guess-cube x guess) guess)))
 (define (cube x)
   (cube-iter x 1.0 10))
+
+;; export all
+
+(#%provide square)
+(#%provide average)

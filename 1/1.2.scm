@@ -1,5 +1,7 @@
 #lang sicp
 
+(#%require "./1.1.scm")
+
 (define (factorial-rec n)
   (if (= n 0) 1 (* n (factorial-rec (- n 1)))))
 
@@ -64,8 +66,6 @@
 ;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
 
 ;;; 1.16
-(define (square x)
-  (* x x))
 (define (even? x)
   (= (remainder x 2) 0))
 
@@ -225,3 +225,6 @@
      n
      (- times 1)]
     [else false]))
+
+(#%provide even?)
+(#%provide prime?)

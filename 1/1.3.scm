@@ -1,9 +1,11 @@
 #lang sicp
 
-(define (even? n)
-  (= (remainder n 2) 0))
+(#%require "./1.1.scm")
+(#%require "./1.2.scm")
+
 (define (sum term a next b)
   (if (> a b) 0 (+ (term a) (sum term (next a) next b))))
+
 (define (integral f a b dx)
   (define (add-dx x)
     (+ x dx))
@@ -11,6 +13,7 @@
 
 (define (identity n)
   n)
+
 (define (add-one n)
   (+ n 1))
 
@@ -74,10 +77,10 @@
     (if (> a b) result (iter (next a) (if (filter a) (combiner (term a) result) result))))
   (iter a null-value))
 
-; (define (sum-square-prime a b)
-;   (define (combiner a b)
-;     (+ a b))
-;   (filtered-accumulate-iter combiner 0 identity a add-one b prime?))
+(define (sum-square-prime a b)
+  (define (combiner a b)
+    (+ a b))
+  (filtered-accumulate-iter combiner 0 identity a add-one b prime?))
 
 ;;; 1.34
 ;;; if f is defined as (define (f g) (g 2))
@@ -107,14 +110,14 @@
 ;; without dampening (34 calls)
 ; (fixed-point (lambda (x) (/ (log 1000) (log x)))  2)
 ;; with dampening (9 calls)
-; (fixed-point (lambda (x) (/ (+ x (/ (log 1000) (log x))) 2)) 2)
+; (fixed-point (lambda (x) (average x (/ (log 1000) (log x)))) 2)
 
 ;;; 1.37
 ;; this is convulted see https://eli.thegreenplace.net/2007/07/13/sicp-sections-132-133
 (define (cont-frac n d k)
   (define (cont-frac-impl i)
-    (if (= i k) (/ (n i) (d i)) (/ (n i) (+ (d i) (cont-frac-impl n d (+ i 1))))))
-  (cont-frac-impl n d 1))
+    (if (= i k) (/ (n i) (d i)) (/ (n i) (+ (d i) (cont-frac-impl (+ i 1))))))
+  (cont-frac-impl 1))
 
 ;;; 1/phi
 ; (cont-frac (lambda (n) 1) (lambda (d) 1) 20)
@@ -127,7 +130,13 @@
 ;;; 1.38
 
 ;;; e - 2
-; (cont-frac-iter (lambda (i) 1.0) (lambda (i) (cond [(= i 2) i] [(= (remainder (+ i 1) 3) 0) (* 2 (/ (+ i 1) 3))] [else 1])) 20)
+; (cont-frac-iter (lambda (i) 1.0)
+;                 (lambda (i)
+;                   (cond
+;                     [(= i 2) i]
+;                     [(= (remainder (+ i 1) 3) 0) (* 2 (/ (+ i 1) 3))]
+;                     [else 1]))
+;                 20)
 
 ;;; 1.39
 
@@ -147,7 +156,7 @@
 
 ;;; 1.40
 (define (cubic a b c)
-  (lambda (x) (+ c (* b x) (* a x x) (* x x x))))
+  (lambda (x) (+ c (* b x) (* a (square x)) (* x (square x)))))
 
 ;;; 1.41
 (define (double f)
