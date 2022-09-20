@@ -146,9 +146,9 @@
   (tan-n 1))
 
 ;;; newtons method
+(define *dx 0.00001)
 (define (deriv g)
-  (define dx 0.00001)
-  (lambda (x) (/ (- (g (+ x dx)) (g x)) dx)))
+  (lambda (x) (/ (- (g (+ x *dx)) (g x)) *dx)))
 (define (newton-transform g)
   (lambda (x) (- x (/ (g x) ((deriv g) x)))))
 (define (newtons-method g guess)
@@ -169,4 +169,18 @@
 
 ;;; 1.43
 (define (repeated f n)
-  (if (= n 1) (lambda (x) (f x)) (compose f (repeated f (- n 1)))))
+  (if (= n 1) f (compose f (repeated f (- n 1)))))
+
+;;; 1.44
+(define (smooth f)
+  (lambda (x) (average (f x) (average (f (+ x *dx)) (f (- x *dx))))))
+
+; (define (repeated-smooth f n)
+;   (lambda (x) (((repeated smooth n) f) x)))
+
+;;; 1.46
+(define (iterative-improve good-guess? improve-guess)
+  (define (iter guess)
+    (let ([improved-guess (improve-guess guess)])
+      (if (good-guess? guess improved-guess) improved-guess (iter improved-guess))))
+  iter)
