@@ -1,7 +1,6 @@
 #lang sicp
 
-(define (gcd a b)
-  (if (= b 0) a (gcd b (remainder a b))))
+(#%require "../1/1.2.scm")
 
 ;;; 2.1
 (define (make-rat n d)

@@ -228,3 +228,4 @@
 
 (#%provide even?)
 (#%provide prime?)
+(#%provide gcd)
