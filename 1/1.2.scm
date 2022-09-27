@@ -123,9 +123,9 @@
 
 ;;; divisors
 ;;; 1.23
+(define (divides? a b)
+  (= (remainder b a) 0))
 (define (smallest-divisor n)
-  (define (divides? a b)
-    (= (remainder b a) 0))
   (define (find-divisor n test-divisor)
     (define (next-divisor n)
       (if (= n 2) 3 (+ n 2)))
@@ -228,4 +228,5 @@
 
 (#%provide even?)
 (#%provide prime?)
+(#%provide divides?)
 (#%provide gcd)

@@ -69,3 +69,53 @@
   (z (lambda (p q) p)))
 (define (my-cdr z)
   (z (lambda (p q) q)))
+
+;;; 2.5
+
+(define (cons-25 x y)
+  (* (expt 2 x) (expt 3 y)))
+(define (car-25 z)
+  (define (impl n a)
+    (if (divides? n 2) (impl (/ n 2) (+ a 1)) a))
+  (impl z 0))
+(define (cdr-25 z)
+  (define (impl n b)
+    (if (divides? n 3) (impl (/ n 3) (+ b 1)) b))
+  (impl z 0))
+
+;;; 2.6
+(define zero (lambda (f) (lambda (x) x)))
+
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+
+(define one (lambda (f) (lambda (x) (f x))))
+(define two (lambda (f) (lambda (x) (f (f x)))))
+
+(define (plus num1 num2)
+  (lambda (f) (lambda (x) ((num1 f) ((num2 f) x)))))
+
+;;; 2.7
+(define (make-interval a b)
+  (cons a b))
+(define (lower-bound z)
+  (car z))
+(define (upper-bound z)
+  (cdr z))
+
+;;; 2.8
+(define (sub-interval a b)
+  (make-interval (- (lower-bound a) (upper-bound b)) (- (lower-bound a) (upper-bound b))))
+
+;;; 2.9
+(define (mul-interval x y)
+  (let ([p1 (* (lower-bound x) (lower-bound y))]
+        [p2 (* (lower-bound x) (upper-bound y))]
+        [p3 (* (upper-bound x) (lower-bound y))]
+        [p4 (* (upper-bound x) (upper-bound y))])
+    (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4))))
+
+(define (div-interval x y)
+  (if (or (= (lower-bound y) 0) (= (upper-bound y) 0))
+      (error "You can't divide by zero")
+      (mul-interval x (make-interval (/ 1.0 (upper-bound y)) (/ 1.0 (lower-bound y))))))

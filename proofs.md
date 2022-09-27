@@ -25,3 +25,17 @@ fib(n) = fib(n-1) + fib(n-2)
        = (phi^(n-2)*phi^2 - psi^(n-1)*psi^2)/sqrt(5)
        = (phi^n - psi^n)/sqrt(5)
 ```
+
+## 2.9
+```
+let interval x = (a, b)
+    interval y = (c, d)
+
+then width(x) = (b - a)/2
+     width(y) = (d - c)/2
+     x+y = (a+c, b+d)
+
+width(x+y) = (b+d-a-c)/2 = (b-a)/2 + (d-c)/2 = width(x) + width(y)
+
+but width(x*y) = (b*d-a*c)/2 which is not a function of width(x) or width(y)
+```
