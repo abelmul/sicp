@@ -119,3 +119,45 @@
   (if (and (>= (lower-bound y) 0) (>= (upper-bound y) 0))
       (error "You can't divide by zero")
       (mul-interval x (make-interval (/ 1.0 (upper-bound y)) (/ 1.0 (lower-bound y))))))
+
+;;; 2.11
+(define (mul-interval-211 x y)
+  (let ([upper-x (upper-bound x)]
+        [lower-x (lower-bound x)]
+        [upper-y (upper-bound y)]
+        [lower-y (lower-bound y)])
+    (cond
+      [(and (>= upper-x 0) (>= lower-x 0) (>= upper-y 0) (>= lower-y 0))
+       (make-interval (* lower-x lower-y) (* upper-x upper-y))]
+      [(and (>= upper-x 0) (>= lower-x 0) (>= upper-y 0) (< lower-y 0))
+       (make-interval (* upper-x lower-y) (* upper-x upper-y))]
+      [(and (>= upper-x 0) (>= lower-x 0) (< upper-y 0) (< lower-y 0))
+       (make-interval (* upper-x lower-y) (* lower-x upper-y))]
+      [(and (>= upper-x 0) (< lower-x 0) (>= upper-y 0) (>= lower-y 0))
+       (make-interval (* upper-y lower-x) (* upper-y upper-x))]
+      [(and (>= upper-x 0) (< lower-x 0) (>= upper-y 0) (< lower-y 0))
+       (let ([p1 (* lower-x lower-y)]
+             [p2 (* lower-x upper-y)]
+             [p3 (* upper-x upper-y)]
+             [p4 (* upper-x lower-y)])
+         (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4)))]
+      [(and (>= upper-x 0) (< lower-x 0) (< upper-y 0) (< lower-y 0))
+       (make-interval (* upper-x lower-y) (* lower-x lower-y))]
+      [(and (< upper-x 0) (< lower-x 0) (>= upper-y 0) (>= lower-y 0))
+       (make-interval (* lower-x upper-y) (* lower-y upper-x))]
+      [(and (< upper-x 0) (< lower-x 0) (>= upper-y 0) (< lower-y 0))
+       (make-interval (* lower-x upper-y) (* lower-y lower-x))]
+      [(and (< upper-x 0) (< lower-x 0) (< upper-y 0) (< lower-y 0))
+       (make-interval (* upper-x upper-y) (* lower-y lower-x))]
+
+      [else (error "can't be")])))
+
+;;; 2.12
+(define (make-center-percent c p)
+  (let ([width (abs (* c (/ p 100)))]) (make-interval (- c width) (+ c width))))
+
+(define (center i)
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(define (percent i)
+  (* 100 (- (/ (upper-bound i) (abs (center i))) 1)))
