@@ -39,3 +39,18 @@ width(x+y) = (b+d-a-c)/2 = (b-a)/2 + (d-c)/2 = width(x) + width(y)
 
 but width(x*y) = (b*d-a*c)/2 which is not a function of width(x) or width(y)
 ```
+
+## 2.13
+```
+let x = (a-dx, a+dx)
+    y = (b-dy, b+dy)
+
+    where dx and dy are small tolerances
+
+z = x . y = (ab-bdx-ady+dxdy, ab+bdx+bdy+dxdy)
+
+if we ignore dxdy based on the small tolerance assumption
+the new tolerance = bdx+ady
+
+hense z = (ab - (bdx+ady), ab+(bdx+ady))
+```

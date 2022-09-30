@@ -103,6 +103,9 @@
 (define (upper-bound z)
   (cdr z))
 
+(define (add-interval a b)
+  (make-interval (+ (lower-bound a) (lower-bound b)) (+ (upper-bound a) (upper-bound b))))
+
 ;;; 2.8
 (define (sub-interval a b)
   (make-interval (- (lower-bound a) (upper-bound b)) (- (lower-bound a) (upper-bound b))))
@@ -116,7 +119,7 @@
     (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4))))
 
 (define (div-interval x y)
-  (if (and (>= (lower-bound y) 0) (>= (upper-bound y) 0))
+  (if (and (<= (lower-bound y) 0) (>= (upper-bound y) 0))
       (error "You can't divide by zero")
       (mul-interval x (make-interval (/ 1.0 (upper-bound y)) (/ 1.0 (lower-bound y))))))
 
