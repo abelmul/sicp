@@ -136,5 +136,38 @@
 
 ; if we change the constructors to
 ; (define (make-mobile left right) (cons left right))
-; (define (make-branch length structure) (cons length structure)) 
+; (define (make-branch length structure) (cons length structure))
 ; we don't have to reimplement anything since everything works
+
+;;; 2.30
+
+(define (square-tree items)
+  (if (null? items)
+      nil
+      (let ([first (car items)])
+        (cons (if (pair? first) (square-tree first) (square first)) (square-tree (cdr items))))))
+
+(define (square-tree-map items)
+  (map (lambda (item) (if (pair? item) (square-tree-map item) (square item))) items))
+
+;;; 2.31
+
+(define (tree-map proc tree)
+  (if (null? tree)
+      nil
+      (let ([first (car tree)])
+        (cons (if (pair? first) (tree-map proc first) (proc first)) (tree-map proc (cdr tree))))))
+
+;;; 2.32
+
+; this code starts at the end of the list and appends the new item to every result before it
+; so for example let the set be (1 2 3)
+; we begin at empty set (). (subsets nil) = nil
+; the we go up the chain the set becomes (3). (subsets (3)) = ((3) nil) = (append (subsets nil) (append (car (3)) (subsets nil)))
+; etc
+
+(define (subsets s)
+  (if (null? s)
+      (list nil)
+      (let ([rest (subsets (cdr s))])
+        (append rest (map (lambda (x) (append (list (car s)) x)) rest)))))
