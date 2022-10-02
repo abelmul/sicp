@@ -1,0 +1,3 @@
+- to use racket require in scip lang use the following
+    (#%require (only racket require))
+    (require racket/trace)
