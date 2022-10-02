@@ -96,3 +96,45 @@
 
 (define (fringe l)
   (if (null? l) nil (append (if (pair? (car l)) (fringe (car l)) (list (car l))) (fringe (cdr l)))))
+
+;;; 2.29
+
+(define (make-mobile left right)
+  (list left right))
+(define (make-branch length structure)
+  (list length structure))
+
+;; a
+
+(define (left-branch mobile)
+  (car mobile))
+(define (right-branch mobile)
+  (cdr (car mobile)))
+
+(define (branch-length branch)
+  (car branch))
+
+(define (branch-structure branch)
+  (car (cdr branch)))
+
+;; b
+(define (weight-structure structure)
+  (if (pair? structure) (total-weight structure) structure))
+(define (total-weight mobile)
+  (+ (weight-structure (branch-structure (left-branch mobile)))
+     (weight-structure (branch-structure (right-branch mobile)))))
+
+;; c
+(define (balanced? mobile)
+  (let ([left (left-branch mobile)] [right (right-branch mobile)])
+    (and (= (* (branch-length left) (weight-structure left))
+            (* (branch-length right) (weight-structure right)))
+         (if (pair? left) (balanced? left) #t)
+         (if (pair? right) (balanced? right) #t))))
+
+;; d
+
+; if we change the constructors to
+; (define (make-mobile left right) (cons left right))
+; (define (make-branch length structure) (cons length structure)) 
+; we don't have to reimplement anything since everything works
