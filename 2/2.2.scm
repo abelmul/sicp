@@ -197,6 +197,15 @@
 (define (horner-eval x sequence)
   (accumulate (lambda (current higher) (+ (* higher x) current)) 0 sequence))
 
+;;; 2.35
+(define (count-leaves t)
+  (accumulate (lambda (x y) (+ y x))
+              0
+              (map (lambda (x)
+                     (cond
+                       [(null? x) 0]
+                       [(pair? x) (count-leaves x)]
+                       [else 1])) t)))
 ;;; 2.36
 
 ; this is the most beautiful code i have ever written yet
