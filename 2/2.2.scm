@@ -31,14 +31,14 @@
   (impl (cdr l) (even? (car l)) (list (car l))))
 
 ;;; 2.21
-(define (map proc items)
-  (if (null? items) nil (cons (proc (car items)) (map proc (cdr items)))))
+(define (my-map proc items)
+  (if (null? items) nil (cons (proc (car items)) (my-map proc (cdr items)))))
 
 (define (square-list items)
   (if (null? items) nil (cons (square (car items)) (square-list (cdr items)))))
 
 (define (square-list-map items)
-  (map square items))
+  (my-map square items))
 
 ;;; 2.22
 (define (square-list-iter items)
@@ -148,7 +148,7 @@
         (cons (if (pair? first) (square-tree first) (square first)) (square-tree (cdr items))))))
 
 (define (square-tree-map items)
-  (map (lambda (item) (if (pair? item) (square-tree-map item) (square item))) items))
+  (my-map (lambda (item) (if (pair? item) (square-tree-map item) (square item))) items))
 
 ;;; 2.31
 
@@ -170,7 +170,7 @@
   (if (null? s)
       (list nil)
       (let ([rest (subsets (cdr s))])
-        (append rest (map (lambda (x) (append (list (car s)) x)) rest)))))
+        (append rest (my-map (lambda (x) (append (list (car s)) x)) rest)))))
 
 ;;; 2.33
 
@@ -203,5 +203,5 @@
 (define (accumulate-n op init seqs)
   (if (null? (car seqs))
       nil
-      (cons (accumulate op init (map (lambda (x) (car x)) seqs))
-            (accumulate-n op init (map (lambda (x) (cdr x)) seqs)))))
+      (cons (accumulate op init (my-map (lambda (x) (car x)) seqs))
+            (accumulate-n op init (my-map (lambda (x) (cdr x)) seqs)))))
