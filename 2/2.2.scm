@@ -197,7 +197,7 @@
 (define (horner-eval x sequence)
   (accumulate (lambda (current higher) (+ (* higher x) current)) 0 sequence))
 
-;;; 2.35
+;;; 2.36
 
 ; this is the most beautiful code i have ever written yet
 (define (accumulate-n op init seqs)
@@ -205,3 +205,48 @@
       nil
       (cons (accumulate op init (my-map (lambda (x) (car x)) seqs))
             (accumulate-n op init (my-map (lambda (x) (cdr x)) seqs)))))
+
+;;; 2.37
+
+(define (dot-product v w)
+  (accumulate + 0 (map * v w)))
+
+(define (matrix-*-vector m v)
+  (map (lambda (x) (dot-product v x)) m))
+
+(define (transpose mat)
+  (accumulate-n cons nil mat))
+
+(define (matrix-*-matrix m n)
+  (let ([cols (transpose n)]) (map (lambda (x) (if (null? x) nil (matrix-*-vector cols x))) m)))
+
+; (define v (list 1 2 3 4))
+; (define m (list (list 1 2 3 4) (list 4 5 6 6) (list 6 7 8 9)))
+; (dot-product v v) = 30
+; (matrix-*-vector m v) = (30 56 80)
+; (transpose m) = ((1 4 6) (2 5 7) (3 5 6) (4 6 9))
+; (matrix-*-matrix m (transpose m)) = ((30    56    80) (56   113   161) (80   161   230))
+
+;;; 2.38
+
+(define fold-right accumulate)
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest) result (iter (op result (car rest)) (cdr rest))))
+  (iter initial sequence))
+
+; (fold-right / 1 (list 1 2 3))  =  3/2
+; (fold-left / 1 (list 1 2 3))  = 1/6
+; (fold-right list nil (list 1 2 3)) = (1, (2, (3)))
+; (fold-left list nil (list 1 2 3)) = (((nil, 1), 2), 3))
+
+; for fold-right to be equal to fold-left op(a,b) must be equal to op(b,a).
+; + and * satisfy this
+
+;;; 2.39
+
+(define (reverse-right sequence)
+  (fold-right (lambda (x y) (append y (list x))) nil sequence))
+
+(define (reverse-left sequence)
+  (fold-left (lambda (x y) (append (list y) x)) nil sequence))
