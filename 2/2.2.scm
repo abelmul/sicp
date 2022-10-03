@@ -171,3 +171,37 @@
       (list nil)
       (let ([rest (subsets (cdr s))])
         (append rest (map (lambda (x) (append (list (car s)) x)) rest)))))
+
+;;; 2.33
+
+(define (accumulate op inital sequence)
+  (if (null? sequence) inital (op (car sequence) (accumulate op inital (cdr sequence)))))
+
+(define (filter pridicate? sequence)
+  (cond
+    [(null? sequence) nil]
+    [(pridicate? (car sequence)) (cons (car sequence) (filter pridicate? (cdr sequence)))]
+    [else (filter pridicate? (cdr sequence))]))
+
+(define (map-accumulate p sequence)
+  (accumulate (lambda (x y) (cons (p x) y)) nil sequence))
+
+(define (append-accumulate seq1 seq2)
+  (accumulate cons seq2 seq1))
+
+(define (length-accumulate sequence)
+  (accumulate (lambda (x y) (+ y 1)) 0 sequence))
+
+;;; 2.34
+
+(define (horner-eval x sequence)
+  (accumulate (lambda (current higher) (+ (* higher x) current)) 0 sequence))
+
+;;; 2.35
+
+; this is the most beautiful code i have ever written yet
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      nil
+      (cons (accumulate op init (map (lambda (x) (car x)) seqs))
+            (accumulate-n op init (map (lambda (x) (cdr x)) seqs)))))
