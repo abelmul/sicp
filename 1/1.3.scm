@@ -38,6 +38,7 @@
   (iter a 0))
 
 ;;; 1.31
+
 (define (product term a next b)
   (if (> a b) 1 (* (term a) (product term (next a) next b))))
 
@@ -56,6 +57,7 @@
   (* 4.0 (product-iter term 1 add-one n)))
 
 ;;; 1.32
+
 (define (accumulate combiner null-value term a next b)
   (if (> a b) null-value (combiner (term a) (accumulate combiner null-value term (next a) next b))))
 
@@ -65,6 +67,7 @@
   (iter a null-value))
 
 ;;; 1.33
+
 (define (filtered-accumulate combiner null-value term a next b filter)
   (if (> a b)
       null-value
@@ -83,14 +86,15 @@
   (filtered-accumulate-iter combiner 0 identity a add-one b prime?))
 
 ;;; 1.34
-;;; if f is defined as (define (f g) (g 2))
-;;; (f f) -> (f 2) -> (2 2)
-;;; since 2 is not a function this is an error.
+
+;; if f is defined as (define (f g) (g 2))
+;; (f f) -> (f 2) -> (2 2)
+;; since 2 is not a function this is an error.
 
 ;;; 1.35
 
-;;; phi is one of the roots of the function x^2 = x + 1
-;;; which can be re written as x = 1 + 1/x. Which is the transformation in the question
+;; phi is one of the roots of the function x^2 = x + 1
+;; which can be re written as x = 1 + 1/x. Which is the transformation in the question
 
 ;; (fixed-point (lambda (x) (+ 1 (/ 1 x)))  1)
 
@@ -108,18 +112,19 @@
   (try first-guess))
 
 ;; without dampening (34 calls)
-; (fixed-point (lambda (x) (/ (log 1000) (log x)))  2)
+;; (fixed-point (lambda (x) (/ (log 1000) (log x)))  2)
 ;; with dampening (9 calls)
-; (fixed-point (lambda (x) (average x (/ (log 1000) (log x)))) 2)
+;; (fixed-point (lambda (x) (average x (/ (log 1000) (log x)))) 2)
 
 ;;; 1.37
+
 ;; this is convulted see https://eli.thegreenplace.net/2007/07/13/sicp-sections-132-133
 (define (cont-frac n d k)
   (define (cont-frac-impl i)
     (if (= i k) (/ (n i) (d i)) (/ (n i) (+ (d i) (cont-frac-impl (+ i 1))))))
   (cont-frac-impl 1))
 
-;;; 1/phi
+;; 1/phi
 ; (cont-frac (lambda (n) 1) (lambda (d) 1) 20)
 
 (define (cont-frac-iter n d k)
@@ -129,7 +134,7 @@
 
 ;;; 1.38
 
-;;; e - 2
+;; e - 2
 ; (cont-frac-iter (lambda (i) 1.0)
 ;                 (lambda (i)
 ;                   (cond
@@ -145,7 +150,8 @@
     (/ (if (= i 1) x (* x x)) (- (+ (* 2 i) 1) (if (= i n) 0 (tan-n (+ i 1))))))
   (tan-n 1))
 
-;;; newtons method
+;; newtons method
+
 (define *dx 0.00001)
 (define (deriv g)
   (lambda (x) (/ (- (g (+ x *dx)) (g x)) *dx)))
@@ -155,23 +161,28 @@
   (fixed-point (newton-transform g) guess))
 
 ;;; 1.40
+
 (define (cubic a b c)
   (lambda (x) (+ c (* b x) (* a (square x)) (* x (square x)))))
 
 ;;; 1.41
+
 (define (double f)
   (lambda (x) (f (f x))))
 ;; (((double (double double)) inc) 5) = 21
 
 ;;; 1.42
+
 (define (compose f g)
   (lambda (x) (f (g x))))
 
 ;;; 1.43
+
 (define (repeated f n)
   (if (= n 1) f (compose f (repeated f (- n 1)))))
 
 ;;; 1.44
+
 (define (smooth f)
   (lambda (x) (average (f x) (average (f (+ x *dx)) (f (- x *dx))))))
 
@@ -179,6 +190,7 @@
 ;   (lambda (x) (((repeated smooth n) f) x)))
 
 ;;; 1.46
+
 (define (iterative-improve good-guess? improve-guess)
   (define (iter guess)
     (let ([improved-guess (improve-guess guess)])

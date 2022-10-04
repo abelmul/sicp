@@ -17,7 +17,7 @@
     (if (= count 0) b (fibonaci-impl b (+ a b) (- count 1))))
   (fibonaci-impl 0 1 n))
 
-;;; Counting Change
+;; Counting Change
 (define (count-change-rec amount)
   (define (first-denomination kinds-of-coins)
     (cond
@@ -52,9 +52,11 @@
       (+ (pascal-tri-rec (- row 1) (- col 1)) (pascal-tri-rec row (- col 1)))))
 
 ;;; 1.14
+
 ;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
 
 ;;; 1.15
+
 (define (sine angle)
   (define (cube x)
     (* x x x))
@@ -66,6 +68,7 @@
 ;; https://eli.thegreenplace.net/2007/06/28/sicp-section-123
 
 ;;; 1.16
+
 (define (even? x)
   (= (remainder x 2) 0))
 
@@ -81,6 +84,7 @@
   (fast-expt-iter b 1 n))
 
 ;;; 1.17
+
 (define (double a)
   (+ a a))
 (define (halve a)
@@ -100,6 +104,7 @@
   (fast-mul-iter a b 0))
 
 ;;; 1.19
+
 (define (fib n)
   (define (fib-iter a b p q count)
     (cond
@@ -118,11 +123,13 @@
   (fib-iter 1 0 0 1 n))
 
 ;;; 1.20
+
 (define (gcd a b)
   (if (= b 0) a (gcd b (remainder a b))))
 
-;;; divisors
 ;;; 1.23
+
+;; divisors
 (define (divides? a b)
   (= (remainder b a) 0))
 (define (smallest-divisor n)
@@ -136,7 +143,7 @@
 
   (find-divisor n 2))
 
-;;; primes
+;; primes
 
 (define (expmod base exp m)
   (cond
@@ -158,6 +165,7 @@
     [else false]))
 
 ;;; 1.22
+
 (define (prime? n)
   (= n (smallest-divisor n)))
 
@@ -183,15 +191,15 @@
 
 ;;; 1.25
 
-;;; if we did (fast-expt base exp) we will compute the value unnessesarily.
-;;; It might also cause overflow on some platforms and languages if the computed number is very large.
-;;; But we can use the fact that remainder(a x b, n) = remainder(a, n) x remainder(b, n) to compute less.
+;; if we did (fast-expt base exp) we will compute the value unnessesarily.
+;; It might also cause overflow on some platforms and languages if the computed number is very large.
+;; But we can use the fact that remainder(a x b, n) = remainder(a, n) x remainder(b, n) to compute less.
 
 ;;; 1.26
 
-;;; if we do (* (expmod base (/ exp 2)) (expmod base (/ exp 2))) we compute the (expmod base (/ exp 2)) twice.
-;;; Since expmod is recursive this computation will call another expmod ... etc.
-;;; Which will make expmod tree recursive. But if we call (squre (expmod base (/ exp 2))) we compute it once.
+;; if we do (* (expmod base (/ exp 2)) (expmod base (/ exp 2))) we compute the (expmod base (/ exp 2)) twice.
+;; Since expmod is recursive this computation will call another expmod ... etc.
+;; Which will make expmod tree recursive. But if we call (squre (expmod base (/ exp 2))) we compute it once.
 
 ;;; 1.27
 
@@ -201,6 +209,7 @@
   (test-fermat 2))
 
 ;;; 1.28
+
 (define (fast-prime-miller-rabin n times)
   (define (remainder-if-not-zero number m)
     (if (= number 0) 0 (remainder number m)))

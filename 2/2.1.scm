@@ -4,10 +4,12 @@
 (#%require "../1/1.2.scm")
 
 ;;; 2.1
+
 (define (make-rat n d)
   (let ([g (gcd n d)]) (cons (/ (if (or (< n 0) (< d 0)) (- 0 abs (n)) n) g) (/ abs (d) g))))
 
 ;;; 2.2
+
 (define (make-point x y)
   (cons x y))
 (define (x-point point)
@@ -41,7 +43,7 @@
 (define (perimeter rectangle)
   (* 2 (+ (width rectangle) (height rectangle))))
 
-;;; using diagonal points
+;; using diagonal points
 
 (define (make-rectangle diagonal-right diagonal-left)
   (cons diagonal-right diagonal-left))
@@ -52,8 +54,8 @@
 (define (height rectangle)
   (abs (- (x-point (car rectangle)) (x-point (cdr rectangle)))))
 
-;;; alternative
-;;; using diagonal segment
+;; alternative
+;; using diagonal segment
 
 ; (define (make-rectangle diagonal-right diagonal-left)
 ;   (make-segment diagonal-right diagonal-left))
@@ -63,6 +65,7 @@
 ;   (abs (- (y-point (start-segment rectangle))) (- (y-point (end-segment rectangle)))))
 
 ;;; 2.4
+
 (define (my-cons x y)
   (lambda (m) (m x y)))
 (define (my-car z)
@@ -84,6 +87,7 @@
   (impl z 0))
 
 ;;; 2.6
+
 (define zero (lambda (f) (lambda (x) x)))
 
 (define (add-1 n)
@@ -96,6 +100,7 @@
   (lambda (f) (lambda (x) ((num1 f) ((num2 f) x)))))
 
 ;;; 2.7
+
 (define (make-interval a b)
   (cons a b))
 (define (lower-bound z)
@@ -107,10 +112,12 @@
   (make-interval (+ (lower-bound a) (lower-bound b)) (+ (upper-bound a) (upper-bound b))))
 
 ;;; 2.8
+
 (define (sub-interval a b)
   (make-interval (- (lower-bound a) (upper-bound b)) (- (lower-bound a) (upper-bound b))))
 
 ;;; 2.10
+
 (define (mul-interval x y)
   (let ([p1 (* (lower-bound x) (lower-bound y))]
         [p2 (* (lower-bound x) (upper-bound y))]
@@ -124,6 +131,7 @@
       (mul-interval x (make-interval (/ 1.0 (upper-bound y)) (/ 1.0 (lower-bound y))))))
 
 ;;; 2.11
+
 (define (mul-interval-211 x y)
   (let ([upper-x (upper-bound x)]
         [lower-x (lower-bound x)]
@@ -156,6 +164,7 @@
       [else (error "can't be")])))
 
 ;;; 2.12
+
 (define (make-center-percent c p)
   (let ([width (abs (* c (/ p 100)))]) (make-interval (- c width) (+ c width))))
 

@@ -3,14 +3,17 @@
 (#%require "../1/1.1.scm")
 
 ;;; 2.17
+
 (define (last-pair l)
   (if (null? (cdr l)) (car l) (last-pair (cdr l))))
 
 ;;; 2.18
+
 (define (reverse l)
   (if (null? l) nil (append (reverse (cdr l)) (list (car l)))))
 
 ;;; 2.19
+
 (define no-more? null?)
 (define first-denomination car)
 (define except-first-denomination cdr)
@@ -23,6 +26,7 @@
         (cc (- amount (first-denomination coin-values)) coin-values))]))
 
 ;;; 2.20
+
 (define (same-parity . l)
   (define (impl l even ans)
     (if (null? l)
@@ -31,6 +35,7 @@
   (impl (cdr l) (even? (car l)) (list (car l))))
 
 ;;; 2.21
+
 (define (my-map proc items)
   (if (null? items) nil (cons (proc (car items)) (my-map proc (cdr items)))))
 
@@ -41,6 +46,7 @@
   (my-map square items))
 
 ;;; 2.22
+
 (define (square-list-iter items)
   (define (iter things answer)
     (if (null? things) answer (iter (cdr things) (cons (square (car things)) answer))))
@@ -56,6 +62,7 @@
 ;; which produces the correct answer
 
 ;;; 2.23
+
 (define (for-each proc items)
   (cond
     [(null? items) nil]
