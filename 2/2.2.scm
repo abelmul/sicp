@@ -302,7 +302,7 @@
 
 
 (define (queens board-size)
-  (define empty-board '())
+  (define empty-board nil)
 
   (define (adjoin-position new-row k rest-of-queens)
     (append (list (cons new-row k)) rest-of-queens))
@@ -335,4 +335,6 @@
 
   (queen-cols board-size))
 
+;;; 2.43
 
+;; the new version avoids calling (queen-cols (- k 1)) multiple times and only computes it once
