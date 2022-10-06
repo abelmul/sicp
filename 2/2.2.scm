@@ -1,6 +1,7 @@
 #lang sicp
 
 (#%require "../1/1.1.scm")
+(#%require "../1/1.2.scm")
 
 ;;; 2.17
 
@@ -181,6 +182,9 @@
 
 ;;; 2.33
 
+(define (enumerate-interval i j)
+  (if (> i j) nil (cons i (enumerate-interval (+ i 1) j))))
+
 (define (accumulate op inital sequence)
   (if (null? sequence) inital (op (car sequence) (accumulate op inital (cdr sequence)))))
 
@@ -212,7 +216,8 @@
                      (cond
                        [(null? x) 0]
                        [(pair? x) (count-leaves x)]
-                       [else 1])) t)))
+                       [else 1]))
+                   t)))
 ;;; 2.36
 
 ; this is the most beautiful code i have ever written yet
@@ -266,3 +271,68 @@
 
 (define (reverse-left sequence)
   (fold-left (lambda (x y) (append (list y) x)) nil sequence))
+
+;;; 2.40
+
+(define (flatmap proc sequence)
+  (accumulate append nil (map proc sequence)))
+
+(define (unique-pairs n)
+  (flatmap (lambda (i) (map (lambda (j) (list i j)) (enumerate-interval 1 (- i 1))))
+           (enumerate-interval 1 n)))
+
+(define (prime-sum-pairs n)
+  (define (prime-sum? pair)
+    (prime? (+ (car pair) (cadr pair))))
+  (define (make-pair-sum pair)
+    (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
+
+  (map make-pair-sum (filter prime-sum? (unique-pairs n))))
+
+;;; 2.41
+
+(define (equal-sum-triples n s)
+  (filter (lambda (x) (= (+ (car x) (cadr x) (caddr x)) s))
+          (let ([one-to-n (enumerate-interval 1 n)])
+            (flatmap
+             (lambda (i) (flatmap (lambda (j) (map (lambda (k) (list i j k)) one-to-n)) one-to-n))
+             one-to-n))))
+
+;;; 2.42
+
+
+(define (queens board-size)
+  (define empty-board '())
+
+  (define (adjoin-position new-row k rest-of-queens)
+    (append (list (cons new-row k)) rest-of-queens))
+
+  (define (safe? k positions)
+    (define (checks? x y)
+      (let ([x1 (car x)] [x2 (cdr x)] [y1 (car y)] [y2 (cdr y)])
+        (cond
+          [(and (= x1 y1) (= x2 y2)) #f]
+          [(or (= x1 y1) (= x2 y2)) #t]
+          [(= (abs (- x1 y1)) (abs (- x2 y2))) #t]
+          [else #f])))
+
+    (define (iter col positions)
+      (cond
+        [(null? positions) #t]
+        [(checks? col (car positions)) #f]
+        [else (iter col (cdr positions))]))
+
+    (iter (car positions) positions))
+
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter (lambda (positions) (safe? k positions))
+                (flatmap (lambda (rest-of-queens)
+                           (map (lambda (new-row) (adjoin-position new-row k rest-of-queens))
+                                (enumerate-interval 1 board-size)))
+                         (queen-cols (- k 1))))))
+
+  (queen-cols board-size))
+
+
