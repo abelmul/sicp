@@ -281,3 +281,147 @@
 ;     [(= given-key (key (entry set-of-records))) (entry set-of-records)]
 ;     [(< given-key (key (entry set-of-records))) (lookup given-key (left-branch set-of-records))]
 ;     [(= given-key (key (entry set-of-records))) (lookup given-key (right-branch set-of-records))]))
+
+;; common
+;; huffman encoding
+
+(define (make-leaf symbol weight)
+  (list 'leaf symbol weight))
+(define (leaf? object)
+  (eq? (car object) 'leaf))
+(define (symbol-leaf x)
+  (cadr x))
+(define (weight-leaf x)
+  (caddr x))
+
+(define (left-branch-huffman tree)
+  (car tree))
+(define (right-branch-huffman tree)
+  (cadr tree))
+(define (symbols tree)
+  (if (leaf? tree) (list (symbol-leaf tree)) (caddr tree)))
+(define (weight tree)
+  (if (leaf? tree) (weight-leaf tree) (cadddr tree)))
+
+(define (make-code-tree left right)
+  (list left right (append (symbols left) (symbols right)) (+ (weight left) (weight right))))
+
+(define (choose-branch bit branch)
+  (cond
+    [(= bit 0) (left-branch-huffman branch)]
+    [(= bit 1) (right-branch-huffman branch)]
+    [else (error "bad bit: CHOOSE-BRANCH" bit)]))
+
+(define (decode bits tree)
+  (define (decode-1 bits current-branch)
+    (if (null? bits)
+        '()
+        (let ([next-branch (choose-branch (car bits) current-branch)])
+          (if (leaf? next-branch)
+              (cons (symbol-leaf next-branch) (decode-1 (cdr bits) tree))
+              (decode-1 (cdr bits) next-branch)))))
+  (decode-1 bits tree))
+
+(define (adjoin-set-huffman x set)
+  (cond
+    [(null? set) (list x)]
+    [(< (weight x) (weight (car set))) (cons x set)]
+    [else (cons (car set) (adjoin-set-huffman x (cdr set)))]))
+
+(define (make-leaf-set pairs)
+  (if (null? pairs)
+      '()
+      (let ([pair (car pairs)])
+        (adjoin-set-huffman (make-leaf (car pair) (cadr pair)) (make-leaf-set (cdr pairs))))))
+
+;; from https://eli.thegreenplace.net/2007/09/12/sicp-section-234
+(define (display-huffman-tree tree)
+  (define (space-offset offset)
+    (if (<= offset 0) "" (string-append " " (space-offset (- offset 1)))))
+  (define (print-node node offset)
+    (display (space-offset offset))
+    (if (leaf? node)
+        (begin
+          (display (symbol-leaf node))
+          (display " ")
+          (display (weight-leaf node))
+          (newline))
+        (begin
+          (display (symbols node))
+          (display " ")
+          (display (weight node))
+          (newline)
+          (print-node (left-branch-huffman node) (+ 2 offset))
+          (print-node (right-branch-huffman node) (+ 2 offset)))))
+
+  (print-node tree 0))
+
+;; 2.67
+
+#|
+(define sample-tree
+  (make-code-tree (make-leaf 'A 4)
+                  (make-code-tree (make-leaf 'B 2)
+                                  (make-code-tree (make-leaf 'D 1) (make-leaf 'C 1)))))
+(define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
+
+(decode sample-message sample-tree) = '(A D A B B C A)
+|#
+
+;; 2.68
+(define (encode message tree)
+  (if (null? message) '() (append (encode-symbol (car message) tree) (encode (cdr message) tree))))
+(define (encode-symbol symbol tree)
+  (define (includes-symbol? symbol set)
+    (cond
+      [(null? set) false]
+      [(eq? symbol (car set)) true]
+      [else (includes-symbol? symbol (cdr set))]))
+  (cond
+    [(leaf? tree) '()]
+    [(includes-symbol? symbol (symbols (left-branch-huffman tree)))
+     (cons 0 (encode-symbol symbol (left-branch-huffman tree)))]
+    [(includes-symbol? symbol (symbols (right-branch-huffman tree)))
+     (cons 1 (encode-symbol symbol (right-branch-huffman tree)))]
+    [else (error "bad symbol: not in tree" symbol)]))
+
+;; 2.69
+(define (generate-huffman-tree pairs)
+  (successive-merge (make-leaf-set pairs)))
+(define (successive-merge pairs)
+  (if (< (length pairs) 2)
+      (car pairs)
+      (successive-merge (adjoin-set-huffman (make-code-tree (car pairs) (cadr pairs)) (cddr pairs)))))
+
+;; 2.70
+
+#|
+(define rock-50s-tree
+  (generate-huffman-tree
+    '((a 2) (boom 1) (get 2) (job 2)
+      (na 16) (sha 3) (yip 9) (wah 1))))
+
+(encode
+    '(get a job sha na na na na na na na na
+      get a job sha na na na na na na na na
+      wah yip yip yip yip yip yip yip yip yip
+      sha boom) rock-50s-tree) = (1 1 1 1 1 1 1 0 0 1 1 1 1 0 1 1 1 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0 1 1 1 1 0 1 1 1 0 0 0 0 0 0 0 0 0 1 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 0 1 1 0 1 1)
+|#
+
+;; 2.71
+
+#|
+(display-huffman-tree (generate-huffman-tree '((a 1) (b 2) (c 4) (d 8) (e 16))))
+(display-huffman-tree (generate-huffman-tree '((a 1) (b 2) (c 4) (d 8) (e 16) (f 32) (g 64) (h 128) (i 256) (j 512))))
+
+for such a tree
+1. to encode the most frequent symbol - 1 bit
+2. to encode the least frequent symbol - n-1 bits
+|#
+
+;; 2.72
+
+#|
+for the most frequent symbol - O(n)
+for the most least frequent symbol - O(n^2)
+|#
