@@ -1,10 +1,5 @@
 #lang sicp
 
-; (#%require "../1/1.1.scm")
-; (#%require "../1/1.2.scm")
-; (#%require "./2.1.scm")
-; (#%require "./2.2.scm")
-
 ;;;
 (define (memq item x)
   (cond
@@ -35,8 +30,8 @@
     [(variable? expr) (if (same-variable? expr var) 1 0)]
     [(exponentiation? expr)
      (make-product-infix (make-product-infix (exponent expr)
-                                             (make-exponentiation (base expr) (- expr 1)))
-                         (deriv base))]
+                                             (make-exponentiation (base expr) (- (exponent expr) 1)))
+                         (deriv (base expr) var))]
     [(sum-infix? expr)
      (make-sum-infix (deriv (addend-infix expr) var) (deriv (augend-infix expr) var))]
     [(product-infix? expr)
@@ -425,3 +420,10 @@ for such a tree
 for the most frequent symbol - O(n)
 for the most least frequent symbol - O(n^2)
 |#
+
+;; export
+(#%provide variable?)
+(#%provide same-variable?)
+(#%provide make-sum)
+(#%provide make-product)
+(#%provide make-exponentiation)
