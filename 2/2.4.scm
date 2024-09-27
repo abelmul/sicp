@@ -112,3 +112,10 @@ Operator | Operation
 ;; Because we have to change the top level functions using explicit dispatch it is not good
 ;; for both cases. As for the data-directed style and message-passing style we don't have to
 ;; change the top funtion definitions so they are good for the task.
+
+;; exports
+(#%provide attach-tag)
+(#%provide type-tag)
+(#%provide contents)
+(#%provide get)
+(#%provide put)
